@@ -1,0 +1,8 @@
+		
+//DADOS DE TESTE
+//-----------------------------------------------------------------------------		
+//		ministro.setCdCodigo(46L);
+//		ministro.setNmNome("SALVINO JUNIOR");
+//		ministro.setDsCpf("65254295791");
+//		ministro.setDtNascimento(LocalDate.parse("1963-08-03"));  // 03/08/1963
+	

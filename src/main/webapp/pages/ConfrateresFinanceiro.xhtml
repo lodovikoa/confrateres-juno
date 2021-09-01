@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" >
+	
+<h:head>
+	<f:facet name="first">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<h:outputScript target="body" library="primefaces" name="jquery/jquery.js" />
+		<h:outputScript target="body" library="convencao" name="javascripts/app.js" />
+		<h:outputScript target="body" library="convencao" name="javascripts/jquery.maskMoney.js" />
+	</f:facet>
+
+	<title>Convenção</title>
+	
+	<h:outputStylesheet library="convencao" name="css/layout.css" />
+	<h:outputStylesheet library="convencao" name="css/components.css" />
+	<h:outputStylesheet library="convencao" name="css/custom.css" />
+</h:head>
+
+<h:body >
+	<div id="tudo">
+		<div id="conteudo">
+			<f:metadata>
+				<f:event listener="#{junoPagamentosBean.inicializar}" type="preRenderView" />
+			</f:metadata>
+			
+			<p:ajaxStatus id="ajax-principal" styleClass="ajax-status2">
+				<f:facet name="start">
+					<h:graphicImage library="convencao" name="images/loading.gif"/>			
+				</f:facet>
+			</p:ajaxStatus>
+			
+			<h:form id="frm">			
+				<div style="text-align:center">
+					<h:graphicImage library="convencao" name="images/logo01.png" />
+					<p:messages closable="true" style="font-size: large;" > <p:autoUpdate /> </p:messages>
+				</div>
+				<div class="ui-fluid" >
+					<div >
+						<h:panelGroup id="pnlgrp-validar" layout="block" >		
+							<p:focus context="pnlgrp-validar"/>
+							<div class="cv-cadastro">
+								<p:panelGrid columns="4"
+									layout="grid"
+									id="pgValidar01" 
+									columnClasses="ui-grid-col-3, ui-grid-col-1, ui-grid-col-2,ui-grid-col-6">
+									
+									<p:outputLabel style="font-weight: bold;" value="Registro Confrateres" for="nnRg"/>
+									<p:inputText required="true" requiredMessage="Registro Confratéries é Obrigatório" id="nnRg" value="#{junoPagamentosBean.ministroTemp.cdCodigo}" onfocus="" />
+											
+									<p:outputLabel style="font-weight: bold;" value="Nome Ministro" for="dsMinistro"/>
+									<p:inputText required="true" requiredMessage="Nome Ministro é Obrigatório" id="dsMinistro" value="#{junoPagamentosBean.ministroTemp.nmNome}" />
+								</p:panelGrid>
+								
+								<p:panelGrid columns="4"
+									layout="grid"
+									id="pgValidar02" 
+									columnClasses="ui-grid-col-1, ui-grid-col-3, ui-grid-col-2, ui-grid-col-3">
+									
+									<p:outputLabel style="font-weight: bold;" value="CPF" for="dsCpf"/>
+										<p:inputMask required="true" requiredMessage="CPF é Obrigatório" mask="999.999.999-99" id="dsCpf" value="#{junoPagamentosBean.ministroTemp.dsCpf}" >	
+											<f:converter converterId="converter_cpf"/>
+		 									<f:validator validatorId="validator_cpf"/>
+										</p:inputMask>	
+											
+										<p:outputLabel style="font-weight: bold;" value="Dt Nascimento" for="dtNascimento"/>
+										<p:calendar id="dtNascimento" 
+											required="true" 
+											requiredMessage="Data Nascimento é Obrigatório"
+											pattern="dd/MM/yyyy" 
+											mask="true" 
+											locale="pt" 
+											showButtonPanel="true" 
+											navigator="true"
+											value="#{junoPagamentosBean.ministroTemp.dtNascimento}">
+											<f:converter converterId="converter_localdate"/>   
+										</p:calendar>
+									
+								</p:panelGrid>
+							</div>		
+						</h:panelGroup>
+					
+					</div>
+					
+					<div>
+						<p:panelGrid columns="4"
+								layout="grid"
+								id="pgListar" 
+								columnClasses="ui-grid-col-4, ui-grid-col-2, ui-grid-col-2, ui-grid-col-4" >
+								
+							<p:outputLabel />
+								
+							<p:commandButton 
+								value="LISTAR PENDÊNCIAS"
+								style="font-weight: bold; color: #f6d636;"
+								action="#{junoPagamentosBean.listarPendenciasMinistro}" 
+								update="@form"/>
+								
+							<p:button style="font-weight: bold; color: #f6d636;" value="NOVA CONSULTA" />
+							
+							<p:outputLabel />
+						</p:panelGrid>
+					
+					</div>
+					
+					<div >
+						<p:panelGrid columns="4"
+								layout="grid"
+								id="pgExibirMinistro" 
+								columnClasses="ui-grid-col-1, ui-grid-col-4, ui-grid-col-2, ui-grid-col-5"
+								rendered="#{junoPagamentosBean.ministro != null}"  >
+							<p:outputLabel style="font-weight: bold;" value="Registro"/>
+							<p:outputLabel style="font-weight: bold;" value="Ministro"/>
+							<p:outputLabel style="font-weight: bold;" value="Cargo"/>
+							<p:outputLabel style="font-weight: bold;" value="Igreja"/>	
+							
+							<p:outputLabel value="#{junoPagamentosBean.ministro.cdCodigo}"/>
+							<p:outputLabel value="#{junoPagamentosBean.ministro.nmNome}"/>
+							<p:outputLabel value="#{junoPagamentosBean.ministro.cargo.dsCargo}"/>
+							<p:outputLabel value="#{junoPagamentosBean.ministro.igreja.dsIgreja}"/>
+							
+							<p:outputLabel style="font-weight: bold;" value="E-mail:"/>
+							<p:outputLabel value="#{junoPagamentosBean.ministro.dsEmail}"/>
+							<p:outputLabel style="font-weight: bold;" value="E-mail(Opcional)"/>
+							<p:inputText value="#{junoPagamentosBean.ministroTemp.dsSegundoEmail}"/>
+						</p:panelGrid>
+							
+					</div>
+					
+					<div align="center">
+						<p:dataTable value="#{junoPagamentosBean.lancamentosTOList}"
+							var="item"
+							style="width:740px; margin-top:20px;"
+							id="dtList"
+							paginator="false"
+							emptyMessage="Não há registros para exibir" 
+							rendered="#{junoPagamentosBean.ministro != null}" >
+									
+							<p:column headerText="" style="text-align:left; width:200px;" >
+								<p:outputLabel value="#{item.dsLancamentoTipo}"/>
+							</p:column>
+									
+							<p:column headerText="Valor" style="text-align: right; width:90px; ">
+								<h:outputText value="#{item.vlLancamento}" styleClass="moeda">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+									
+							<p:column headerText="Saldo devedor" style="text-align: right; width:90px;">
+								<h:outputText value="#{item.vlSaldo}" styleClass="moeda">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+								</h:outputText>
+										
+								<f:facet name="footer" >
+									<p:outputLabel style="font-weight: bold; font-size: large; color: blue;"  value="#{junoPagamentosBean.vlTotalSaldoDevedor}" styleClass="moeda" >
+										<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+									</p:outputLabel>
+								</f:facet>
+										
+							</p:column>
+									
+							<p:column  headerText="Pagar" style="text-align:center; width:70px;" >
+								<p:selectBooleanCheckbox 
+										rendered="true"
+										id="cmbFlRealizarPagamento" 
+										value="#{item.flLancamentoSelecionado}" >
+									<p:ajax update="frm:dtList, frm:dtList2" process="@this" listener="#{junoPagamentosBean.calcularSelecionados}" />
+								</p:selectBooleanCheckbox>
+								
+								<f:facet name="footer" >
+									<p:outputLabel 
+											style="font-weight: bold; font-size: large; color: blue;"  
+											value="#{junoPagamentosBean.vlTotalSelecionado}" 
+											styleClass="moeda" >
+										<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+									</p:outputLabel>
+								</f:facet>
+										
+							</p:column>
+									
+							<p:column headerText="Reemitir boleto" style="text-align:left; " >
+								<h:commandLink value="Exibir boleto"
+										id="cmlExibirBoleto"
+										rendered="#{not empty item.dsUrl}"
+				                		actionListener="#{junoPagamentosBean.exibirBoletoHistorico(item.dsUrl)}"
+				                		target="_blank" 
+				                		type="submit" 
+				                		style="text-decoration:none; color: red; font-weight: bold;" />
+							</p:column>
+									
+							<f:facet name="footer">
+						        <p:outputLabel value="Selecione os valores para pagamento"/>
+						    </f:facet>
+									
+						</p:dataTable> 
+					</div>
+					
+					<div align="center">
+						<p:messages closable="true" style="font-size: large;" > <p:autoUpdate /> </p:messages>
+						
+						<h:commandLink value="Boleto emitido para os e-mail #{junoPagamentosBean.ministro.dsEmail} #{junoPagamentosBean.ministro.dsSegundoEmail} clique aqui para exibi-lo"
+										id="cmlExibirBoletoAtual"
+										rendered="#{not empty junoPagamentosBean.charge.link}"
+				                		actionListener="#{junoPagamentosBean.exibirBoletoAtual}"
+				                		target="_blank" 
+				                		type="submit" 
+				                		style="text-decoration:none; font-size: xx-large; color: red; font-weight: bold;" />
+					
+					</div>
+					
+		 			<div align="center">									
+						<p:dataTable id="dtList2" 
+							var="item2" 
+							value="#{junoPagamentosBean.parcelamentoTOList}"
+							rowKey="#{item2.qtdeParcelas}"
+		                    selection="#{junoPagamentosBean.parcelamentoSelecionado}" 
+		                    style="width:250px; margin-top:20px;"
+		                    emptyMessage=""
+		                    rendered="#{not empty junoPagamentosBean.lancamentosTOList}" >
+						    
+							<f:facet name="header">
+						        <p:outputLabel value="Selecione o parcelamento desejado"/>
+						    </f:facet>
+								    
+						    <p:column selectionMode="single" style="width:26px; text-align:center"/>
+								    
+						    <p:column headerText="" style="width:26px;" >
+								<p:outputLabel value="#{item2.qtdeParcelas}x"/>
+							</p:column>
+								    
+						    <p:column headerText="" style="text-align: right;">
+								<p:outputLabel value="#{item2.vlParcela}" styleClass="moeda">
+									<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />	
+								</p:outputLabel>
+							</p:column>
+		
+						</p:dataTable>
+					</div>
+					
+					<div>
+						<p:panelGrid columns="3"
+									layout="grid"
+									id="pgEmitirBoleto" 
+									columnClasses="ui-grid-col-4, ui-grid-col-4, ui-grid-col-4"
+									rendered="#{not empty junoPagamentosBean.lancamentosTOList}" >
+								
+								<p:outputLabel />
+		
+								<p:commandButton value="EMITIR BOLETO PARA PAGAMENTO"
+											id="cmbEmitirBoleto"
+											style="font-weight: bold; color: #f6d636; margin-top:20px; margin-bottom: 10px;"
+											action="#{junoPagamentosBean.emitirBoleto}"
+											update="@form" />
+						        
+								<p:outputLabel />		 					
+						</p:panelGrid>
+					</div>	
+					
+				</div>	
+			</h:form>
+		</div>
+	</div>
+</h:body>
+</html>

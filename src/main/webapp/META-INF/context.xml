@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+	<!-- disables storage of sessions across restarts -->
+	<Manager pathname=""/>
+	<Resource name="BeanManager" auth="Container"
+		type="javax.enterprise.inject.spi.BeanManager"
+		factory="org.jboss.weld.resources.ManagerObjectFactory" />
+
+	<Resource name="jdbc/confrateresDB" 
+		auth="Container"
+		factory="org.apache.naming.factory.BeanFactory"
+		type="com.mchange.v2.c3p0.ComboPooledDataSource"
+		driverClass="com.mysql.cj.jdbc.Driver"
+		jdbcUrl="jdbc:mysql://localhost:3306/confrater00" 
+		user="confrater"
+		password="12345678" 
+		minPoolSize="10" 
+		maxPoolSize="20" />
+
+</Context>

@@ -1,0 +1,277 @@
+/* TOGGLE */
+.aw-toggle {
+	float: right;
+	line-height: 50px;
+	margin-right: 15px;
+	
+	color: #fff;
+}
+
+/* MENU */
+.aw-menu {
+	font-size: 1em;
+	margin-left: 10px; 
+}
+
+/* PAGE-TITLE */
+.aw-page-title {
+	font-size: 1.5em;
+	padding-top: 20px;
+	color: #373737;
+}
+
+
+/* ConvencaoCadastro */
+.cv-cadastro-convencao-logo {
+	width: 120px;
+	height: 290px;
+	position: absolute;
+	top: 220px;
+	left: 1000px;
+}
+
+.cv-toolbar-topo {
+	margin-bottom: 10px;
+}
+
+
+/* Exibi��o de labels em dialogos */
+.cv-dialogo-exibe-label {
+	font-weight: bold;
+}
+
+/* Estilizar links */
+
+a.cv-link-estilo {
+	color:#4682B4 !important;
+}
+
+/* a:link........define o estilo do link no estado inicial; */
+a.cv-link-estilo:link {
+	font-weight: bold;
+	/* background-color: #ceceff; */
+	text-decoration: none;
+}
+
+
+/* a:visited...define o estilo do link visitado */
+a.cv-link-estilo:visited {
+}
+
+/* a:hover.....define o estilo do link quando passa-se o mouse sobre ele */
+a.cv-link-estilo:hover {
+	color:#FF0000 !important; 
+	 /* background:#ff0; */ 
+}
+
+/* a:active....define o estilo do link ativo (o que foi "clicado"). */
+a.cv-link-estilo:active {
+	
+}
+
+.cv-texto-maiusculo {
+	text-transform: uppercase;
+}
+
+.cv-erro-processar {
+	padding-top: 200px;
+}
+
+.colunaDireita{
+	text-align: right;
+}
+.colunaEsquerda{
+	text-align: left;	
+}
+
+.cv-linha-horizontal {
+	width: 99%;
+	height: 20px; 
+	margin: 5px;
+	background: #eae8d9;
+}
+
+.cv-linha-horizontal-texto {
+	text-align: left;
+	font-weight: bold;
+	padding-top: 2px;
+	padding-left: 10px;
+}
+
+.cv-texto-negrito {
+	font-weight: bold;
+}
+
+/* Inicio do bot�o */
+.cv-botao {
+	-moz-box-shadow:inset 0px 0px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 0px 0px 0px #ffffff;
+	box-shadow:inset 0px 0px 0px 0px #ffffff;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf));
+	background:-moz-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-webkit-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-o-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-ms-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf',GradientType=0);
+	background-color:#ededed;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#777777;
+	font-family:Verdana;
+	font-size:15px;
+	padding:3px 11px;
+	text-decoration:none;
+	text-shadow:0px 0px 0px #ffffff;
+}
+.cv-botao:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed));
+	background:-moz-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-webkit-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-o-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-ms-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:linear-gradient(to bottom, #dfdfdf 5%, #ededed 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed',GradientType=0);
+	background-color:#dfdfdf;
+}
+.cv-botao:active {
+	position:relative;
+	top:1px;
+}
+
+/* Fim do bot�o */
+
+.desativar_imagem {
+	background-image: url("/confrateres/resources/convencao/images/bolinha_stop.gif") !important;
+}
+
+.reativar_imagem {
+	background-image: url("/confrateres/resources/convencao/images/bolinha_go.gif") !important;
+}
+
+.ficha_cadastro_imagem {
+	background-image: url("/confrateres/resources/convencao/images/ficha_cadastro.png") !important;
+}
+
+.historico_imagem {
+	background-image: url("/confrateres/resources/convencao/images/historico.gif") !important;
+}
+
+.senha_imagem {
+	background-image: url("/confrateres/resources/convencao/images/senha.png") !important;
+}
+
+.add_16_imagem {
+	background-image: url("/confrateres/resources/convencao/images/add_16.png") !important;
+}
+
+.cancel_16_imagem {
+	background-image: url("/confrateres/resources/convencao/images/cancel_16.png") !important;
+}
+
+.lock_open_16x16_imagem {
+	background-image: url("/confrateres/resources/convencao/images/lock_open_16x16.png") !important;
+}
+
+.cadeado_16x16_imagem {
+	background-image: url("/confrateres/resources/convencao/images/cadeado_16x16.png") !important;
+}
+
+.cancelar_imagem {
+	background-image: url("/confrateres/resources/convencao/images/app_48.png") !important;
+}
+
+#login-dialog {
+	width: 22%;
+	margin: auto;
+	margin-top: 150px;
+}
+
+.grid-login {
+	background-color: #f2f2f2;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	margin-top: 8px;
+	padding: 10px;
+	
+}
+
+
+/* Upload */
+.bw-upload {
+	padding: 15px;
+	
+	border: 1px dashed #ddd;
+	border-radius: 4px;
+	background: #fafafa;
+	
+	text-align: center;
+}
+
+.bw-upload-form-file {
+	display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1px;
+}
+
+.bw-upload-form-file > input[type=file] {
+	position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+    
+    font-size: 500px;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: #003300;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    width: 425px;
+    height: 250px;
+}
+
+.containerJuno {
+	width: 100vw;
+	height: 100vh;
+	background: #6C7A89;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.boxJuno {
+	width: 600px;
+	height: 400px;
+	background: #fff;
+	border-style: solid;
+}
+
+#tudo {
+	width: 760px;
+	margin:0 auto;			
+	padding: 10px;
+	text-align:left; /* "remédio" para o hack do IE */	
+}
+
+#conteudo {
+	padding: 5px;
+	background-color: #eeeeee;
+}

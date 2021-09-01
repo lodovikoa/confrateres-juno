@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="Confrateres00" transaction-type="RESOURCE_LOCAL" >
+		<non-jta-data-source>java:/comp/env/jdbc/confrateresDB</non-jta-data-source>
+		<properties>
+		
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.show_sql" value="true"/>
+			<property name="hibernate.format_sql" value="true"/>
+ 
+			<property name="hibernate.c3p0.acquire_increment" value="1" />
+			<property name="hibernate.c3p0.idle_test_period" value="60" />
+			<property name="hibernate.c3p0.min_size" value="5" />
+			<property name="hibernate.c3p0.max_size" value="10" />
+			<property name="hibernate.c3p0.max_statements" value="50" />			
+			<property name="hibernate.c3p0.timeout" value="0" />
+	        <property name="hibernate.c3p0.acquireRetryAttempts" value="1" />
+	        <property name="hibernate.c3p0.acquireRetryDelay" value="250"/>
+
+		</properties>
+	</persistence-unit>
+
+</persistence>
