@@ -131,7 +131,7 @@ public class JunoPagamentosBO implements Serializable {
 	// Buscar configuracoes no Banco de Dados
 	private JunoConfiguracao findByJunoConfiguracao() {
 		log.info("findByJunoConfiguracao() Para o ambiente (" + Uteis.getDsAmbiente() + ")");
-		if(Uteis.getDsAmbiente() == null) {
+		if(Uteis.getDsAmbiente() == null || (!Uteis.getDsAmbiente().equals("HML") && !Uteis.getDsAmbiente().equals("PRD"))) {
 			throw new NegocioException("Arquivo confrateres.properties não identificado com o tipo de ambiente.");
 		}
 		return junoPagamentosDAO.findByConfiguracao(Uteis.getDsAmbiente());
