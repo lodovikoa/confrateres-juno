@@ -26,6 +26,7 @@ import br.com.juno.integration.api.services.request.charge.ChargeCreateRequest;
 import br.com.juno.integration.api.services.request.charge.ChargeCreateRequest.Billing;
 import br.com.juno.integration.api.services.request.charge.ChargeCreateRequest.Billing.Address;
 import br.com.juno.integration.api.services.request.charge.ChargeCreateRequest.Charge;
+import br.com.juno.integration.api.services.request.charge.ChargeCreateRequest.Charge.PaymentType;
 
 public class JunoPagamentosBO implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -68,11 +69,11 @@ public class JunoPagamentosBO implements Serializable {
 
 
 	// Emitir boleto para os registros selecionados pelo ministro
-	public br.com.juno.integration.api.model.Charge emitirCobranca(Ministro ministro, List<JunoRegLancamentosTO> lancamentosTOSelecionadosList, JunoParcelamentoTO parcelamentoSelecionado) {	
+	public br.com.juno.integration.api.model.Charge emitirCobranca(Ministro ministro, List<JunoRegLancamentosTO> lancamentosTOSelecionadosList, JunoParcelamentoTO parcelamentoSelecionado, String dsFormaPagamento) {	
 		log.info("emitirCobranca( INICIO ): " + ministro.toString());
 
 		// Emitir Boleto
-		ChargeCreateRequest request = createChargeRequest(ministro, lancamentosTOSelecionadosList, parcelamentoSelecionado);
+		ChargeCreateRequest request = createChargeRequest(ministro, lancamentosTOSelecionadosList, parcelamentoSelecionado, dsFormaPagamento);
 
 		List<br.com.juno.integration.api.model.Charge> createdCharges = JunoApiManager.getChargeService().create(request);
 
@@ -105,7 +106,8 @@ public class JunoPagamentosBO implements Serializable {
 		JunoConfig.setDsResouceServer(jc.getDsResouceServer());
 		JunoConfig.setDsCacheTimeout(jc.getDsCacheTimeout());
 		JunoConfig.setVlParcelaMinimo(jc.getVlParcelaMinimo());
-		JunoConfig.setQtdeMaximaParcelas(jc.getQtdeMaximaParcelas());
+		JunoConfig.setQtdeMaximaParcelasBoleto(jc.getQtdeMaximaParcelasBoleto());
+		JunoConfig.setQtdeMaximaParcelasCartao(jc.getQtdeMaximaParcelasCartao());
 
 	}
 
@@ -170,7 +172,7 @@ public class JunoPagamentosBO implements Serializable {
 
 
 	// Preparar boleto para registrar na Juno
-	private static ChargeCreateRequest createChargeRequest(Ministro ministro, List<JunoRegLancamentosTO> lancamentosTOSelecionadosList, JunoParcelamentoTO parcelamentoSelecionado) {
+	private static ChargeCreateRequest createChargeRequest(Ministro ministro, List<JunoRegLancamentosTO> lancamentosTOSelecionadosList, JunoParcelamentoTO parcelamentoSelecionado, String dsFormaPagamento) {
 		log.info("ChargeCreateRequest() - Preparando boleto");
 
 		StringBuilder dsLactos = new StringBuilder();
@@ -187,17 +189,33 @@ public class JunoPagamentosBO implements Serializable {
 		}
 
 		ChargeCreateRequest.Charge charge = new Charge(dsLactos.toString());
+		ChargeCreateRequest.Billing billing = new Billing();
+		ChargeCreateRequest.Billing.Address address = new Address();
+		
 		charge.setAmount(parcelamentoSelecionado.getVlParcela());
 		charge.setDueDate(Uteis.AdcionarDiasNaData(Uteis.DataHoje().toLocalDate(), 5)); 
 		charge.setInstallments(parcelamentoSelecionado.getQtdeParcelas());
-
-		ChargeCreateRequest.Billing billing = new Billing();
+		
+		if(dsFormaPagamento.equalsIgnoreCase("BOLETO")) {
+			charge.getPaymentTypes().add(PaymentType.BOLETO);
+		} else if(dsFormaPagamento.equalsIgnoreCase("CARTAOCREDITO")) {
+			charge.getPaymentTypes().add(PaymentType.CREDIT_CARD);
+			address.setPostCode(ministro.getDsCep());
+			address.setStreet(ministro.getDsEndereco());
+			address.setNumber("...");
+			address.setNeighborhood(ministro.getDsBairro());
+			address.setCity(ministro.getDsCidade());
+			address.setState(ministro.getEstado().getDsUf());
+		} else {
+			throw new NegocioException("ERRO - Forma de Pagamento não identificada!");
+		}
+		
 		billing.setName(ministro.getCdCodigo() + " - " + ministro.getNmNome());
 		billing.setDocument(ministro.getDsCpf());
 		billing.setEmail(ministro.getDsEmail());
 		billing.setSecondaryEmail(ministro.getDsSegundoEmail());
 		billing.setNotify(true);
-		ChargeCreateRequest.Billing.Address address = new Address();
+		
 		billing.setAddress(address);
 
 		ChargeCreateRequest request = new ChargeCreateRequest(charge, billing);
@@ -223,7 +241,7 @@ public class JunoPagamentosBO implements Serializable {
 					if(boleto != null) {
 						log.info("salveBoleto() - Alterar boleto existente para o RegLancamento: " + reg.getSqRegLancamento());
 						
-						boleto.setDsUrl(charge.getLink());
+						boleto.setDsUrl(charge.getCheckoutUrl());
 						boleto.getRegLancamento().setSqRegLancamento(reg.getSqRegLancamento());
 						junoPagamentosDAO.saveBoleto(boleto);
 					} else {
@@ -232,7 +250,7 @@ public class JunoPagamentosBO implements Serializable {
 						boleto = new Boleto();
 						boleto.setRegLancamento(new RegLancamento());
 						
-						boleto.setDsUrl(charge.getLink());
+						boleto.setDsUrl(charge.getCheckoutUrl());
 						boleto.getRegLancamento().setSqRegLancamento(reg.getSqRegLancamento());
 						junoPagamentosDAO.saveBoleto(boleto);
 					}

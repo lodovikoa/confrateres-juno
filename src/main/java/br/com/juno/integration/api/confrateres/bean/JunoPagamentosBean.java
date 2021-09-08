@@ -20,7 +20,6 @@ import br.com.juno.integration.api.confrateres.model.JunoParcelamentoTO;
 import br.com.juno.integration.api.confrateres.model.JunoRegLancamentosTO;
 import br.com.juno.integration.api.confrateres.model.Ministro;
 import br.com.juno.integration.api.confrateres.utils.Uteis;
-import br.com.juno.integration.api.confrateres.utils.jsf.FacesUtil;
 import br.com.juno.integration.api.model.Charge;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,31 +48,36 @@ public class JunoPagamentosBean implements Serializable{
 
 	@Getter @Setter private Charge charge;
 
+	@Getter @Setter private String dsFormaPagamento; //Valores válidos: "BOLETO" ou "CARTAOCREDITO"
+	private String dsFormaPagamentoReter;
+
 	public void inicializar() {
 		// Inicializar MinistroTemp
 		if(ministroTemp == null) {
 			ministroTemp = new Ministro();
 		}
-		
+
 		// Identificar ambiente 1=HML 2=PRD
 		Uteis.buscarAmbiente();
+		
+		this.dsFormaPagamento = "";
 	}
-	
+
 
 	public void listarPendenciasMinistro() {
-		
+
 		// Limpar charge
 		this.charge = null;
 
 		// Validar AccesToken
 		junoPagamentosBO.validarAccessToken();
-		
+
 		this.atualizarPendenciasMinistro();
 
 	}
-	
+
 	private void atualizarPendenciasMinistro() {
-		
+
 		// Limpar variáveis
 		this.vlTotalSaldoDevedor = BigDecimal.ZERO;
 		this.vlTotalSelecionado = BigDecimal.ZERO;
@@ -86,8 +90,7 @@ public class JunoPagamentosBean implements Serializable{
 		if(ministro == null) {
 			// Limpar lista de lancamentos
 			this.lancamentosTOList = null;
-
-			FacesUtil.addErrorMessage("Ministro não localizado!");
+			
 			throw new NegocioException("Ministro não localizado!");
 		}
 
@@ -102,7 +105,7 @@ public class JunoPagamentosBean implements Serializable{
 		for (JunoRegLancamentosTO lan : lancamentosTOList) {
 			this.vlTotalSaldoDevedor = this.vlTotalSaldoDevedor.add(lan.getVlSaldo());
 		}
-		
+
 	}
 
 	public void calcularSelecionados() {
@@ -130,7 +133,17 @@ public class JunoPagamentosBean implements Serializable{
 			this.parcelamentoTOList.add(parcela);
 
 			BigDecimal vlParcelaMinimo = JunoConfig.getVlParcelaMinimo();
-			int qtdeMaximaParcelas = JunoConfig.getQtdeMaximaParcelas();
+
+
+			int qtdeMaximaParcelas;
+			if(this.dsFormaPagamento.equalsIgnoreCase("BOLETO")) {
+				qtdeMaximaParcelas = JunoConfig.getQtdeMaximaParcelasBoleto();
+			} else if(this.dsFormaPagamento.equalsIgnoreCase("CARTAOCREDITO")) {
+				qtdeMaximaParcelas = JunoConfig.getQtdeMaximaParcelasCartao();
+			} else {
+				qtdeMaximaParcelas = 0;
+			}
+
 
 			// Verificar se o valor da parcela é maior/menor que o valor configurado para minimo de parcela
 			while((parcela.getVlParcela().compareTo(vlParcelaMinimo) == 1) && 
@@ -150,13 +163,13 @@ public class JunoPagamentosBean implements Serializable{
 
 	}
 
-	public String emitirBoleto() {
-		System.out.println("EmitirBoleto.............:" +  this.parcelamentoSelecionado);
+	public String emitirCobranca() {
 		if(this.parcelamentoSelecionado == null) {
-			FacesUtil.addErrorMessage("Selecione os Pagamentos e o parcelamento desejado!");
-			throw new NegocioException("Selecione o parcelamento.");
+			throw new NegocioException("Selecione os Pagamentos e o parcelamento desejado!");
+		} else if(this.dsFormaPagamento.isEmpty()) {
+			throw new NegocioException("Selecione a FORMA DE PAGAMENTO.");
 		}
-		
+
 
 		// Verificar se o Segundo e-mail foi alterado e fazer update no cadastro do Ministro
 		if(!this.ministroTemp.getDsSegundoEmail().trim().equals(ministro.getDsSegundoEmail().trim())
@@ -167,28 +180,34 @@ public class JunoPagamentosBean implements Serializable{
 			junoPagamentosBO.salveMinistro(this.ministro);
 		} 
 
-		charge = junoPagamentosBO.emitirCobranca(this.ministro, this.lancamentosTOSelecionadosList, this.parcelamentoSelecionado);
+		charge = junoPagamentosBO.emitirCobranca(this.ministro, this.lancamentosTOSelecionadosList, this.parcelamentoSelecionado, this.dsFormaPagamento);
 
+		this.dsFormaPagamentoReter = this.dsFormaPagamento;
+		
 		this.atualizarPendenciasMinistro();
 
-		return charge.getLink();
+		return charge.getCheckoutUrl();
 	}
 
-	public void exibirBoletoHistorico(String dsUrl) {
+	public void exibirCobrancaHistorico(String dsUrl) {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect(dsUrl);
 		} catch (IOException e) {
-			FacesUtil.addErrorMessage("Erro ao tentar reemitir boleto: Copie e cole a URL no navegador: " + dsUrl);
-			throw new NegocioException("Erro aol tentar reemitir boleto: ", e);
+			throw new NegocioException("Erro ao tentar reemitir cobrança: Copie e cole a URL no navegador: " + dsUrl);
 		}
 	}
 
 	public void exibirBoletoAtual() {
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect(charge.getLink());
+			if(dsFormaPagamentoReter.equalsIgnoreCase("BOLETO")) {
+				FacesContext.getCurrentInstance().getExternalContext().redirect(charge.getLink());
+			} else if(dsFormaPagamentoReter.equalsIgnoreCase("CARTAOCREDITO")) {
+				FacesContext.getCurrentInstance().getExternalContext().redirect(charge.getCheckoutUrl());
+			} else {
+				FacesContext.getCurrentInstance().getExternalContext().redirect(charge.getCheckoutUrl());
+			}
 		} catch (IOException e) {
-			FacesUtil.addErrorMessage("Erro ao tentar reemitir boleto: Copie e cole a URL no navegador: " + charge.getLink());
-			throw new NegocioException("Erro aol tentar reemitir boleto: ", e);
+			throw new NegocioException("Erro ao tentar emitir cobrança: Copie e cole a URL no navegador: " + charge.getCheckoutUrl());
 		}
 	}
 }

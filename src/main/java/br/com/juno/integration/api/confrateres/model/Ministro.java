@@ -58,7 +58,7 @@ public class Ministro implements Serializable {
 	
 	@Transient
 	@Getter @Setter private boolean flAtualizaSegundoEmail;
-
+	
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "igr_sq_igreja", nullable = false)
@@ -66,6 +66,22 @@ public class Ministro implements Serializable {
 
 	@Column(name = "min_ds_foto")
 	@Getter @Setter private String dsFoto;
+	
+	@Column(name = "min_ds_cep")
+	@Getter @Setter private String dsCep;
+	
+	@Column(name = "min_ds_endereco")
+	@Getter @Setter private String dsEndereco;
+	
+	@Column(name = "min_ds_bairro")
+	@Getter @Setter private String dsBairro;
+	
+	@Column(name = "min_ds_cidade")
+	@Getter @Setter private String dsCidade;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "est_sq_estado", nullable = false)
+	@Getter @Setter private Estado estado;
 	
 	@Column(name = "auditoria_usuario")
 	@Getter @Setter private String auditoriaUsuario;

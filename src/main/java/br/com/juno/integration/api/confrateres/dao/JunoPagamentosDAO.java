@@ -59,6 +59,7 @@ public class JunoPagamentosDAO implements Serializable {
 			jpql.append("from Ministro ministro ")
 			.append("left join fetch ministro.cargo ")
 			.append("left join fetch ministro.igreja ")
+			.append("lett join fetch ministro.estado ")
 			.append("where ministro.cdCodigo = :codigoMinistro and ministro.dsCpf = :cpfMinistro and ministro.dtNascimento = :dtNascimentoMinistro ")
 			.append(strNome.toString());
 

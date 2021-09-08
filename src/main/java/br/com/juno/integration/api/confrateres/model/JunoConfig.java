@@ -29,7 +29,8 @@ public final class JunoConfig implements Serializable{
 	@Getter @Setter private static String dsResouceServer; // = "https://sandbox.boletobancario.com/api-integration";
 	@Getter @Setter private static Long dsCacheTimeout;
 	@Getter @Setter private static BigDecimal vlParcelaMinimo;
-	@Getter @Setter private static int qtdeMaximaParcelas;
+	@Getter @Setter private static int qtdeMaximaParcelasBoleto;
+	@Getter @Setter private static int qtdeMaximaParcelasCartao;
 	
 	@Getter @Setter static boolean flAccessTokenValido;  // Se true = Válido, Se False = Precisa atualizar
 		

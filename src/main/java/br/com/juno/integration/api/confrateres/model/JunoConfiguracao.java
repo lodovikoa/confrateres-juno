@@ -67,8 +67,11 @@ public class JunoConfiguracao implements Serializable{
 	@Column(name = "jco_vl_parcela_minimo")
 	@Getter @Setter private BigDecimal vlParcelaMinimo;
 	
-	@Column(name = "jco_nn_qtde_maxima_parcelas")
-	@Getter @Setter private int qtdeMaximaParcelas;
+	@Column(name = "jco_nn_qtde_parcelas_boleto")
+	@Getter @Setter private int qtdeMaximaParcelasBoleto;
+	
+	@Column(name = "jco_nn_qtde_parcelas_cartao")
+	@Getter @Setter private int qtdeMaximaParcelasCartao;
 
 	@Column(name="auditoria_data")
 	@Getter @Setter private LocalDateTime auditoriaData;

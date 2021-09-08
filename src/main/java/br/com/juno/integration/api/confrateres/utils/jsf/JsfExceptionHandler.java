@@ -52,10 +52,10 @@ public class JsfExceptionHandler extends ExceptionHandlerWrapper{
 					redirect("/");
 				}else if(negocioException != null){
 					erroTratado = true;
-				//	FacesUtil.addErrorMessage(negocioException.getMessage());
+					FacesUtil.addErrorMessage(negocioException.getMessage());
 				}else{
 					erroTratado = true;
-					redirect("/erro.xhtml");
+					// redirect("/erro.xhtml");
 				}
 			}finally{
 				if(erroTratado){

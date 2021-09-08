@@ -92,17 +92,17 @@
 						<p:panelGrid columns="4"
 								layout="grid"
 								id="pgListar" 
-								columnClasses="ui-grid-col-4, ui-grid-col-2, ui-grid-col-2, ui-grid-col-4" >
+								columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3, ui-grid-col-3" >
 								
 							<p:outputLabel />
 								
 							<p:commandButton 
 								value="LISTAR PENDÊNCIAS"
-								style="font-weight: bold; color: #f6d636;"
+								style="font-weight: bold; font-size: large; color: #f6d636;"
 								action="#{junoPagamentosBean.listarPendenciasMinistro}" 
 								update="@form"/>
 								
-							<p:button style="font-weight: bold; color: #f6d636;" value="NOVA CONSULTA" />
+							<p:button style="font-weight: bold; font-size: large; color: #f6d636;" value="NOVA CONSULTA" />
 							
 							<p:outputLabel />
 						</p:panelGrid>
@@ -184,11 +184,11 @@
 										
 							</p:column>
 									
-							<p:column headerText="Reemitir boleto" style="text-align:left; " >
-								<h:commandLink value="Exibir boleto"
+							<p:column headerText="Reemitir cobrança" style="text-align:left; " >
+								<h:commandLink value="Exibir cobrança"
 										id="cmlExibirBoleto"
 										rendered="#{not empty item.dsUrl}"
-				                		actionListener="#{junoPagamentosBean.exibirBoletoHistorico(item.dsUrl)}"
+				                		actionListener="#{junoPagamentosBean.exibirCobrancaHistorico(item.dsUrl)}"
 				                		target="_blank" 
 				                		type="submit" 
 				                		style="text-decoration:none; color: red; font-weight: bold;" />
@@ -201,16 +201,26 @@
 						</p:dataTable> 
 					</div>
 					
-					<div align="center">
+					<div align="center" >
+					
 						<p:messages closable="true" style="font-size: large;" > <p:autoUpdate /> </p:messages>
-						
-						<h:commandLink value="Boleto emitido para os e-mail #{junoPagamentosBean.ministro.dsEmail} #{junoPagamentosBean.ministro.dsSegundoEmail} clique aqui para exibi-lo"
-										id="cmlExibirBoletoAtual"
-										rendered="#{not empty junoPagamentosBean.charge.link}"
-				                		actionListener="#{junoPagamentosBean.exibirBoletoAtual}"
-				                		target="_blank" 
-				                		type="submit" 
-				                		style="text-decoration:none; font-size: xx-large; color: red; font-weight: bold;" />
+					
+						<p:panelGrid columns="1" 
+									layout="grid"
+									id="pgExibirCobrancaAtual" 
+									columnClasses="ui-grid-col-12"
+									rendered="#{not empty junoPagamentosBean.charge.checkoutUrl}" >
+										
+							<p:outputLabel style="text-decoration:none; font-size: xx-large; color: blue; font-weight: bold;" 
+											value="Pagamento gerado e emitido para o e-mail: #{junoPagamentosBean.ministro.dsEmail} #{junoPagamentosBean.ministro.dsSegundoEmail}" />
+											
+							<h:commandLink value="Clique aqui para PROSSEGUIR com o PAGAMENTO."
+											id="cmlExibirBoletoAtual"
+					                		actionListener="#{junoPagamentosBean.exibirBoletoAtual}"
+					                		target="_blank" 
+					                		type="submit" 
+					                		style="text-decoration:none; font-size: xx-large; color: red; font-weight: bold;" />
+				        </p:panelGrid>
 					
 					</div>
 					
@@ -243,6 +253,24 @@
 						</p:dataTable>
 					</div>
 					
+					<div align="center">
+						<p:panelGrid columns="2" 
+									layout="grid"
+									id="pgFormaPagamento" 
+									columnClasses="ui-grid-col-4, ui-grid-col-7"
+									style="font-size: large; font-weight: bold;"
+									rendered="#{not empty junoPagamentosBean.lancamentosTOList}" >
+									
+							<p:outputLabel style="color: blue;" value="FORMA DE PAGAMENTO:" />
+									
+							<p:selectOneRadio style="color: blue;" id="cdFormaPagamento" value="#{junoPagamentosBean.dsFormaPagamento}">
+					            <f:selectItem  itemLabel="BOLETO" itemValue="BOLETO"  />
+					            <f:selectItem itemLabel="CARTÃO DE CRÉDITO" itemValue="CARTAOCREDITO" />
+					            <p:ajax update="frm:dtList, frm:dtList2" process="@this" listener="#{junoPagamentosBean.calcularSelecionados}" />
+					        </p:selectOneRadio>
+						</p:panelGrid>
+					</div>
+										
 					<div>
 						<p:panelGrid columns="3"
 									layout="grid"
@@ -252,10 +280,10 @@
 								
 								<p:outputLabel />
 		
-								<p:commandButton value="EMITIR BOLETO PARA PAGAMENTO"
+								<p:commandButton value="GERAR PAGAMENTO"
 											id="cmbEmitirBoleto"
-											style="font-weight: bold; color: #f6d636; margin-top:20px; margin-bottom: 10px;"
-											action="#{junoPagamentosBean.emitirBoleto}"
+											style="font-weight: bold; font-size: large; color: #f6d636; margin-top:20px; margin-bottom: 10px;"
+											action="#{junoPagamentosBean.emitirCobranca}"
 											update="@form" />
 						        
 								<p:outputLabel />		 					
