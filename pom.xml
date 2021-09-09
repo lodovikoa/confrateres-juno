@@ -322,6 +322,7 @@
 	</distributionManagement>
 
 	<build>
+		<finalName>confrateres-juno</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
