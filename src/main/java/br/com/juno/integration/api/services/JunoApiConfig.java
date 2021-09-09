@@ -4,7 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import br.com.juno.integration.api.config.UnirestConfig;
 import br.com.juno.integration.api.confrateres.bo.JunoPagamentosBO;
+import br.com.juno.integration.api.confrateres.exception.NegocioException;
 import br.com.juno.integration.api.confrateres.model.JunoConfig;
+import br.com.juno.integration.api.confrateres.utils.Uteis;
 
 public final class JunoApiConfig {
 
@@ -28,7 +30,15 @@ public final class JunoApiConfig {
     	JunoApiConfig.token_timeout = JunoConfig.getNnTokenTimeout();
     	JunoApiConfig.cache_timeout = JunoConfig.getDsCacheTimeout();
     	
-        sandbox();
+    	if(Uteis.getDsAmbiente() != null && Uteis.getDsAmbiente().equalsIgnoreCase("HML")) {
+    		sandbox();
+    	} else if(Uteis.getDsAmbiente() != null && Uteis.getDsAmbiente().equalsIgnoreCase("PRD")) {
+    		production();
+    	} else {
+    		throw new NegocioException("ERRO Não foi possível identificar ambiente - sandbox() ou production().");
+    	}
+    	
+    	
         UnirestConfig.configure();
     }
 

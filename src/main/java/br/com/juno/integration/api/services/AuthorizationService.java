@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.juno.integration.api.base.Clock;
-import br.com.juno.integration.api.confrateres.bo.JunoPagamentosBO;
 import br.com.juno.integration.api.confrateres.model.JunoConfig;
 import br.com.juno.integration.api.model.AuthorizationToken;
 import kong.unirest.HttpResponse;
