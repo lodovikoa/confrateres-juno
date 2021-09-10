@@ -41,14 +41,14 @@ public class JunoPagamentosBO implements Serializable {
 
 	// Buscar ministro
 	public Ministro buscarMinistro(Ministro ministro) {
-		log.info("buscarMinistro(" + ministro.toString() + ") ");
+		log.info("Ambiente:(" + Uteis.getDsAmbiente() + ") - buscarMinistro(" + ministro.toString() + ") ");
 		return junoPagamentosDAO.findByMinistroJuno(ministro);
 	}
 
 	// Salvar Ministro para registrar o Segundo e-mail
 	@Transactional
 	public void salveMinistro(Ministro ministro) {
-		log.info("salvarMinistro(" + ministro.toString() + ") ");
+		log.info("Ambiente:(" + Uteis.getDsAmbiente() + ") - salvarMinistro(" + ministro.toString() + ") ");
 		try {
 			// Atribuir Usuario de Auditoria
 			ministro.setAuditoriaUsuario("confrater_juno");
@@ -62,7 +62,7 @@ public class JunoPagamentosBO implements Serializable {
 
 	// Buscar lancamentos em aberto do ministro
 	public List<JunoRegLancamentosTO> buscarLancamentosAbertos(Long sqMinistro) {
-		log.info("buscarLancamentosAbertos(sqMinistro = " + sqMinistro + ") ");
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - buscarLancamentosAbertos(sqMinistro = " + sqMinistro + ") ");
 
 		return junoPagamentosDAO.findAllLancamentosAbertos(sqMinistro);
 	}
@@ -70,7 +70,7 @@ public class JunoPagamentosBO implements Serializable {
 
 	// Emitir boleto para os registros selecionados pelo ministro
 	public br.com.juno.integration.api.model.Charge emitirCobranca(Ministro ministro, List<JunoRegLancamentosTO> lancamentosTOSelecionadosList, JunoParcelamentoTO parcelamentoSelecionado, String dsFormaPagamento) {	
-		log.info("emitirCobranca( INICIO ): " + ministro.toString());
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - emitirCobranca( INICIO ): " + ministro.toString());
 
 		// Emitir Boleto
 		ChargeCreateRequest request = createChargeRequest(ministro, lancamentosTOSelecionadosList, parcelamentoSelecionado, dsFormaPagamento);
@@ -83,7 +83,7 @@ public class JunoPagamentosBO implements Serializable {
 		this.salveBoleto(lancamentosTOSelecionadosList, createdCharge);
 		
 
-		log.info("emitirCobranca( FIM ): " + createdCharge.toString());
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - emitirCobranca( FIM ): " + createdCharge.toString());
 
 		return createdCharge;
 	}
@@ -91,7 +91,7 @@ public class JunoPagamentosBO implements Serializable {
 
 	// Atribuir as configuracoes para classe JunoConfig final
 	private void junoConfiguracaoConfrateres(JunoConfiguracao jc) {
-		log.info("junoConfiguracaoConfrateres() ");
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - junoConfiguracaoConfrateres() ");
  
 		JunoConfig.setSqJunoConfiguracao(jc.getSqJunoConfiguracao());
 		JunoConfig.setDsAmbiente(jc.getDsAmbiente());
@@ -119,20 +119,20 @@ public class JunoPagamentosBO implements Serializable {
 		this.junoConfiguracaoConfrateres(jc);
 
 		// Verificar se o token é válido
-		log.info("validarAccessToken() - Verificar se AccessToken é VÁLIDO");
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - validarAccessToken() - Verificar se AccessToken é VÁLIDO");
 		JunoApiManager.getAuthorizationService().getToken();
 
 		if(!JunoConfig.isFlAccessTokenValido()) {
 			JunoConfig.setFlAccessTokenValido(true);
 			this.saveConfiguracao(jc);
 		} else {
-			log.info("validarAccessToken() - AccessToken VÁLIDO ");
+			log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - validarAccessToken() - AccessToken VÁLIDO ");
 		}
 	}
 
 	// Buscar configuracoes no Banco de Dados
 	private JunoConfiguracao findByJunoConfiguracao() {
-		log.info("findByJunoConfiguracao() Para o ambiente (" + Uteis.getDsAmbiente() + ")");
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - findByJunoConfiguracao() Para o ambiente (" + Uteis.getDsAmbiente() + ")");
 		if(Uteis.getDsAmbiente() == null || (!Uteis.getDsAmbiente().equals("HML") && !Uteis.getDsAmbiente().equals("PRD"))) {
 			throw new NegocioException("Arquivo confrateres.properties não identificado com o tipo de ambiente.");
 		}
@@ -142,7 +142,7 @@ public class JunoPagamentosBO implements Serializable {
 	// Salvar Configuracao com novos AccessToken e Hora em milessegundos para identificar vencimento do AccessToken
 	@Transactional
 	public void saveConfiguracao(JunoConfiguracao jc) {
-		log.info("saveConfiguracao()");
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - saveConfiguracao()");
 
 		EntityTransaction trx = manager.getTransaction();
 		try {	
@@ -158,14 +158,14 @@ public class JunoPagamentosBO implements Serializable {
 			junoPagamentosDAO.salveConfiguracao(jc);
 
 			trx.commit();
-			log.info("saveConfiguracao() - COMMIT");
-			log.info("saveConfiguracao( HoraMileSegundos Atual   : " + jc.getNnHoraMillessegundosAtualizacaoToken() + " AccessToken Atual   : " + jc.getDsAccessToken() + " )");			
-			log.info("saveConfiguracao() - AccessToken Atualizado");
+			log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - saveConfiguracao() - COMMIT");
+			log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - saveConfiguracao( HoraMileSegundos Atual   : " + jc.getNnHoraMillessegundosAtualizacaoToken() + " AccessToken Atual   : " + jc.getDsAccessToken() + " )");			
+			log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - saveConfiguracao() - AccessToken Atualizado");
 
 		} catch (Exception e) {
 			trx.rollback();
-			log.info("saveConfiguracao() - ROLLBACK");
-			log.info("saveConfiguracao() - ERRO ao tentar atualizar AccessToken");
+			log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - saveConfiguracao() - ROLLBACK");
+			log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - saveConfiguracao() - ERRO ao tentar atualizar AccessToken");
 			throw e;
 		}
 	}
@@ -173,7 +173,7 @@ public class JunoPagamentosBO implements Serializable {
 
 	// Preparar boleto para registrar na Juno
 	private static ChargeCreateRequest createChargeRequest(Ministro ministro, List<JunoRegLancamentosTO> lancamentosTOSelecionadosList, JunoParcelamentoTO parcelamentoSelecionado, String dsFormaPagamento) {
-		log.info("ChargeCreateRequest() - Preparando boleto");
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - ChargeCreateRequest() - Preparando boleto");
 
 		StringBuilder dsLactos = new StringBuilder();
 		int nnControle = 0;
@@ -225,7 +225,7 @@ public class JunoPagamentosBO implements Serializable {
 	// Salvar Boleto obtido da Juno para os registros selecionados pelo Ministro
 	@Transactional
 	private void salveBoleto(List<JunoRegLancamentosTO> regList, br.com.juno.integration.api.model.Charge charge) {
-		log.info("salveBoleto() - INICIO");
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - salveBoleto() - INICIO");
 		
 		EntityTransaction trx = manager.getTransaction();
 		
@@ -239,13 +239,13 @@ public class JunoPagamentosBO implements Serializable {
 				if(reg.getSqRegLancamento() != 0) {
 					boleto = junoPagamentosDAO.findBoletoPorRegLancamento(reg.getSqRegLancamento());
 					if(boleto != null) {
-						log.info("salveBoleto() - Alterar boleto existente para o RegLancamento: " + reg.getSqRegLancamento());
+						log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - salveBoleto() - Alterar boleto existente para o RegLancamento: " + reg.getSqRegLancamento());
 						
 						boleto.setDsUrl(charge.getCheckoutUrl());
 						boleto.getRegLancamento().setSqRegLancamento(reg.getSqRegLancamento());
 						junoPagamentosDAO.saveBoleto(boleto);
 					} else {
-						log.info("salveBoleto() - Registrar novo boleto para o RegLancamento: " + reg.getSqRegLancamento());
+						log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - salveBoleto() - Registrar novo boleto para o RegLancamento: " + reg.getSqRegLancamento());
 						
 						boleto = new Boleto();
 						boleto.setRegLancamento(new RegLancamento());
@@ -255,7 +255,7 @@ public class JunoPagamentosBO implements Serializable {
 						junoPagamentosDAO.saveBoleto(boleto);
 					}
 				} else {
-					log.info("salveBoleto() - Registrar novo boleto somente para INSCRICAO de OUTROS: " + reg.getSqRegLancamento());
+					log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - salveBoleto() - Registrar novo boleto somente para INSCRICAO de OUTROS: " + reg.getSqRegLancamento());
 					
 					boleto = new Boleto();
 					boleto.setDsUrl(charge.getLink());
@@ -265,13 +265,13 @@ public class JunoPagamentosBO implements Serializable {
 			}
 			
 			trx.commit();
-			log.info("salveBoleto() - COMMIT");
+			log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - salveBoleto() - COMMIT");
 			
 		}catch (Exception e) {
 			trx.rollback();
-			log.info("saveConfiguracao() - ROLLBACK");
+			log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - saveConfiguracao() - ROLLBACK");
 			throw new NegocioException("Falha ao tentar registrar boleto na base de dados da CONFRATERES. Mas o boleto foi emitido: Consulte seu e-mail!");
 		}
-		log.info("salveBoleto() - FIM");
+		log.info("Ambiente: (" + Uteis.getDsAmbiente() + ") - salveBoleto() - FIM");
 	}
 }

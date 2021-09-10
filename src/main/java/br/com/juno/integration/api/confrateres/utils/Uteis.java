@@ -30,7 +30,9 @@ public class Uteis {
 		try {
 
 			Properties props = new Properties();
-			FileInputStream file = new FileInputStream(System.getenv("path_tomcat") + "/confrateres.properties");
+			FileInputStream file = new FileInputStream(System.getProperty("user.home") + "/.ministrofotos/ambiente/confrateres.properties");
+			
+			// FileInputStream file = new FileInputStream(System.getenv("path_tomcat") + "/confrateres.properties");
 			
 			props.load(file);
 			
