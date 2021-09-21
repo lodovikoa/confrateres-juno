@@ -30,6 +30,16 @@
 		<param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
 		<param-value>0</param-value>
 	</context-param>
+	
+	<context-param>
+	    <param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name>
+	    <param-value>6Le8sXocAAAAAFnopdlBQPhoNAlOFdbGTXz-u24x</param-value>
+	</context-param>
+	 
+	<context-param>
+	    <param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
+	    <param-value>6Le8sXocAAAAAGHtvSzIc04yX2IQDg1UXJ8C_Vdx</param-value>
+	</context-param>
 
 	<welcome-file-list>
 		<welcome-file>index.xhtml</welcome-file>

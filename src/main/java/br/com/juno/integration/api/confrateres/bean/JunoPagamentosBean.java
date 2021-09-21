@@ -50,17 +50,20 @@ public class JunoPagamentosBean implements Serializable{
 
 	@Getter @Setter private String dsFormaPagamento; //Valores válidos: "BOLETO" ou "CARTAOCREDITO"
 	private String dsFormaPagamentoReter;
+	
+	@Getter @Setter private boolean flCaptha;
 
 	public void inicializar() {
 		// Inicializar MinistroTemp
 		if(ministroTemp == null) {
 			ministroTemp = new Ministro();
+			this.flCaptha = true;
+			this.dsFormaPagamento = "";
 		}
 
 		// Identificar ambiente 1=HML 2=PRD
 		Uteis.buscarAmbiente();
 		
-		this.dsFormaPagamento = "";
 	}
 
 
@@ -105,6 +108,9 @@ public class JunoPagamentosBean implements Serializable{
 		for (JunoRegLancamentosTO lan : lancamentosTOList) {
 			this.vlTotalSaldoDevedor = this.vlTotalSaldoDevedor.add(lan.getVlSaldo());
 		}
+		
+		// Inibir Capcha
+		this.flCaptha = false;
 
 	}
 
@@ -161,6 +167,11 @@ public class JunoPagamentosBean implements Serializable{
 			}
 		}
 
+	}
+	
+	public void formaPagamento() {
+	//	this.dsFormaPagamentoReter = this.dsFormaPagamento;
+		this.calcularSelecionados();
 	}
 
 	public String emitirCobranca() {

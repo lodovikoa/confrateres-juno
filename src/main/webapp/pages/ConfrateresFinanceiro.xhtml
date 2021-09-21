@@ -92,9 +92,15 @@
 						<p:panelGrid columns="4"
 								layout="grid"
 								id="pgListar" 
-								columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3, ui-grid-col-3" >
+								columnClasses="ui-grid-col-6, ui-grid-col-3, ui-grid-col-3" >
 								
-							<p:outputLabel />
+							<p:captcha language="PT_BR" 
+								id="idCaptcha"
+								required="true"
+								rendered="#{junoPagamentosBean.flCaptha}"
+								requiredMessage="Não sou um robô não foi selecionado!" />
+								
+							<p:outputLabel rendered="#{not junoPagamentosBean.flCaptha}" />
 								
 							<p:commandButton 
 								value="LISTAR PENDÊNCIAS"
@@ -104,7 +110,6 @@
 								
 							<p:button style="font-weight: bold; font-size: large; color: #f6d636;" value="NOVA CONSULTA" />
 							
-							<p:outputLabel />
 						</p:panelGrid>
 					
 					</div>
@@ -224,6 +229,24 @@
 					
 					</div>
 					
+					<div align="center">
+						<p:panelGrid columns="2" 
+									layout="grid"
+									id="pgFormaPagamento" 
+									columnClasses="ui-grid-col-4, ui-grid-col-7"
+									style="font-size: large; font-weight: bold;"
+									rendered="#{not empty junoPagamentosBean.lancamentosTOList}" >
+									
+							<p:outputLabel style="color: blue;" value="FORMA DE PAGAMENTO:" />
+									
+							<p:selectOneRadio style="color: blue;" id="cdFormaPagamento" value="#{junoPagamentosBean.dsFormaPagamento}">
+					            <f:selectItem  itemLabel="BOLETO" itemValue="BOLETO"  />
+					            <f:selectItem itemLabel="CARTÃO DE CRÉDITO" itemValue="CARTAOCREDITO" />
+					            <p:ajax update="frm:dtList, frm:dtList2" process="@this" listener="#{junoPagamentosBean.formaPagamento}" />
+					        </p:selectOneRadio>
+						</p:panelGrid>
+					</div>
+					
 		 			<div align="center">									
 						<p:dataTable id="dtList2" 
 							var="item2" 
@@ -251,24 +274,6 @@
 							</p:column>
 		
 						</p:dataTable>
-					</div>
-					
-					<div align="center">
-						<p:panelGrid columns="2" 
-									layout="grid"
-									id="pgFormaPagamento" 
-									columnClasses="ui-grid-col-4, ui-grid-col-7"
-									style="font-size: large; font-weight: bold;"
-									rendered="#{not empty junoPagamentosBean.lancamentosTOList}" >
-									
-							<p:outputLabel style="color: blue;" value="FORMA DE PAGAMENTO:" />
-									
-							<p:selectOneRadio style="color: blue;" id="cdFormaPagamento" value="#{junoPagamentosBean.dsFormaPagamento}">
-					            <f:selectItem  itemLabel="BOLETO" itemValue="BOLETO"  />
-					            <f:selectItem itemLabel="CARTÃO DE CRÉDITO" itemValue="CARTAOCREDITO" />
-					            <p:ajax update="frm:dtList, frm:dtList2" process="@this" listener="#{junoPagamentosBean.calcularSelecionados}" />
-					        </p:selectOneRadio>
-						</p:panelGrid>
 					</div>
 										
 					<div>
