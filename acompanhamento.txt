@@ -5,4 +5,6 @@
 //		ministro.setNmNome("SALVINO JUNIOR");
 //		ministro.setDsCpf("65254295791");
 //		ministro.setDtNascimento(LocalDate.parse("1963-08-03"));  // 03/08/1963
-	
+
+
+https://qastack.com.br/programming/11803948/lombok-is-not-generating-getter-and-setter
