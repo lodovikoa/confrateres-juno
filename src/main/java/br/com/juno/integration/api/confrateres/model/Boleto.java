@@ -33,11 +33,16 @@ public class Boleto implements Serializable{
 	@Getter @Setter private Long sqBoleto;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "agr_sq_recibo")
+	@Getter @Setter private AgoRecibo agoRecibo;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "rgl_sq_reglancamento")
 	@Getter @Setter private RegLancamento regLancamento;
+	
+	
 	
 	@Column(name = "bol_ds_url")
 	@Getter @Setter private String dsUrl;
 	
-
 }

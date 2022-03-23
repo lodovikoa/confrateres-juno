@@ -8,12 +8,21 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Properties;
 
+import org.primefaces.context.PrimeRequestContext;
+
 import br.com.juno.integration.api.confrateres.exception.NegocioException;
 import lombok.Getter;
 
 public class Uteis {
 
 	@Getter static private String dsAmbiente;
+	
+	public static final String _CARTAOCREDITO = "CARTAOCREDITO";
+	public static final String _BOLETO = "BOLETO";
+	public static final String _PIX = "PIX";
+	public static final String _DEPOSITO = "DEPOSITO";
+	public static final String _OUTROS = "OUTROS";
+	public static final String _URL_COMPLEMENTO = "pages/ConfrateresFinanceiro.xhtml";
 
 	// Retorna Data atual com hora
 	public static LocalDateTime DataHoje() {	
@@ -43,6 +52,11 @@ public class Uteis {
 		} catch (IOException e) {
 			throw new NegocioException("Erro ao tentar ler arquivo de 'props.load(file)' arquivo confrateres.properties em: " + System.getenv("path_tomcat"));
 		}
+	}
+	
+	// Fechar Dialog do PrimeFaces
+	public static void fecharDialogoPrimeFaces(boolean loggedIn) {
+		PrimeRequestContext.getCurrentInstance().getCallbackParams().put("loggedIn", loggedIn);
 	}
 
 }

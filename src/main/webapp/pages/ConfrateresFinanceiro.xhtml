@@ -36,7 +36,7 @@
 				</f:facet>
 			</p:ajaxStatus>
 			
-			<h:form id="frm">			
+			<h:form id="frm" >			
 				<div style="text-align:center">
 					<h:graphicImage library="convencao" name="images/logo01.png" />
 					<p:messages closable="true" style="font-size: large;" > <p:autoUpdate /> </p:messages>
@@ -89,29 +89,57 @@
 					</div>
 					
 					<div>
-						<p:panelGrid columns="4"
+						<p:panelGrid columns="3"
 								layout="grid"
 								id="pgListar" 
-								columnClasses="ui-grid-col-6, ui-grid-col-3, ui-grid-col-3" >
+								columnClasses="ui-grid-col-6, ui-grid-col-4, ui-grid-col-2" >
 								
 							<p:captcha language="PT_BR" 
 								id="idCaptcha"
 								required="true"
-								rendered="#{junoPagamentosBean.flCaptha}"
+								rendered="#{junoPagamentosBean.flExibirCaptcha}"
 								requiredMessage="Não sou um robô não foi selecionado!" />
 								
-							<p:outputLabel rendered="#{not junoPagamentosBean.flCaptha}" />
+							<p:outputLabel rendered="#{not junoPagamentosBean.flExibirCaptcha}" />
 								
 							<p:commandButton 
 								value="LISTAR PENDÊNCIAS"
 								style="font-weight: bold; font-size: large; color: #f6d636;"
-								action="#{junoPagamentosBean.listarPendenciasMinistro}" 
+								action="#{junoPagamentosBean.listarPendenciasMinistro('pendencias')}" 
+								rendered="#{!junoPagamentosBean.flAgo}"
 								update="@form"/>
 								
-							<p:button style="font-weight: bold; font-size: large; color: #f6d636;" value="NOVA CONSULTA" />
+							<p:commandButton 
+								value="LISTAR minhas inscricões"
+								style="font-weight: bold; font-size: large; color: #f6d636;"
+								rendered="#{junoPagamentosBean.flAgo and junoPagamentosBean.ministro != null}"
+								oncomplete="PF('widgAgoInscricoesRealizadasDialog').show();"
+								actionListener="#{junoPagamentosBean.inicializarInscricoesDoMinistro}"
+								process="@this"
+								update=":frm_ago_inscricoes_realizadas"
+						    	ajax="true" />
+								
+							<p:button style="font-weight: bold; font-size: large; color: #f6d636;" 
+								value="NOVA consulta"
+								rendered="#{junoPagamentosBean.ministro != null}" />
 							
 						</p:panelGrid>
 					
+					</div>
+					
+					<div style="text-align:center;">
+						<p:panelGrid columns="1"
+								layout="grid"
+								id="pgInscricaoAGO" 
+								columnClasses="ui-grid-col-12"
+								rendered="#{junoPagamentosBean.flAgo}" >
+								
+							<p:commandButton 
+								value="Faça aqui a INSCRIÇÃO para 77ª Assembléia Geral Ordinária da CONFRATERES Dia do Evento: 30/04/2021"
+								style="font-weight: bold; font-size: large; color: #f6d636; height:100px"
+								action="#{junoPagamentosBean.inscricaoAgo('ago')}" 
+								update="@form"/>
+						</p:panelGrid>
 					</div>
 					
 					<div >
@@ -137,6 +165,68 @@
 						</p:panelGrid>
 							
 					</div>
+						
+					<div style="text-align:center;">	
+						<p:panelGrid columns="1"
+									layout="grid"
+									id="pgExibirInstrucoes" 
+									columnClasses="ui-grid-col-12"
+									rendered="#{junoPagamentosBean.flAgo and junoPagamentosBean.ministro != null}"  >
+									
+								<p:outputLabel style="ont-weight: bold; font-size: large; color: #006400;" value="TAXA DE INSCRIÇÃO" />
+								<p:outputLabel style="ont-weight: bold; font-size: large; color: blue;" value="Até  31/03/2022 - Ministros e Obreiros R$ 50,00 Esposas de Ministro/Obreiro R$ 40,00" />
+								<p:outputLabel style="ont-weight: bold; font-size: large; color: blue;" value="Após 31/03/2022 - Ministros e Obreiros R$ 60,00 Esposas de Ministro/Obreiro R$ 50,00" />
+								<p:outputLabel  />
+								<p:outputLabel style="ont-weight: bold; font-size: large; color: #006400;" value="É IMPRECIDÍVEL O ENVIO DO COMPROVANTE PARA EFETIVAÇÃO DA INSCRIÇÃO" />
+								<p:outputLabel style="ont-weight: bold; font-size: large; color: blue;" value="EMAIL - #{junoPagamentosBean.dsEmailAtivo}" />
+								<p:outputLabel style="ont-weight: bold; font-size: large; color: blue;" value="Whattsapp #{junoPagamentosBean.dsWatsappAtivo}" />
+								<p:outputLabel />
+								<p:outputLabel style="ont-weight: bold; font-size: large; color: #006400;" value="É necessário estar em dia com as anuidades" />
+						</p:panelGrid>
+					</div>
+					
+					<div>
+						<p:panelGrid columns="3"
+								layout="grid"
+								id="pgMinhaInscricao" 
+								columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-6"
+								rendered="#{junoPagamentosBean.flBotoesInscricaoAgo}" >
+								
+							<p:commandButton
+								title="Minha inscricão" 
+								value="Fazer Minha INSCRIÇÃO"
+								style="font-weight: bold; font-size: large; color: #f6d636; height:80px"
+								action="#{junoPagamentosBean.buscarPendenciasInscricao('ago')}" 
+								update="@form"
+								rendered="#{junoPagamentosBean.flExibirBotaoMinhaInscricao}" />
+								
+							<p:commandButton 
+										title="Inscricão de Ministros"
+										value="Fazer INSCRIÇÃO de outro Ministro"
+										style="font-weight: bold; font-size: large; color: #f6d636; height:80px"
+										id="botaoInscricaoMinistros" 
+										oncomplete="PF('widgAgoOutroMinistroDialog').show();"
+										actionListener="#{junoPagamentosBean.inicializarAgoOutroMinistro}"
+										process="@this"
+										update=":frm_ago_outro_ministro"
+						    			ajax="true" 
+						    			rendered="#{junoPagamentosBean.flExibirBotaoOutroMinistro}" />
+						    			
+						
+							<p:commandButton 
+										title="Inscricão de esposa de Ministro e Outros que não são ministros da Confrateres"
+										value="Fazer INSCRIÇÃO de esposa de Ministro/Obreiro e Outros"
+										style="font-weight: bold; font-size: large; color: #f6d636; height:80px"
+										id="botaoInscricaoEsposaOutros" 
+										oncomplete="PF('widgAgoEsposaOutro').show();"
+										actionListener="#{junoPagamentosBean.inicializarAgoEsposaOutros}"
+										process="@this"
+										update=":frm_ago_esposa_ministro_outros"
+						    			ajax="true" 
+						    			rendered="#{junoPagamentosBean.flExibirBotaoOutros}" />
+						
+						</p:panelGrid>
+					</div>
 					
 					<div align="center">
 						<p:dataTable value="#{junoPagamentosBean.lancamentosTOList}"
@@ -145,10 +235,15 @@
 							id="dtList"
 							paginator="false"
 							emptyMessage="Não há registros para exibir" 
-							rendered="#{junoPagamentosBean.ministro != null}" >
+							rendered="#{junoPagamentosBean.lancamentosTOList.size() > 0 and junoPagamentosBean.ministro != null }" >
+							
+							<f:facet name="header" >
+				            	<p:outputLabel rendered="#{!junoPagamentosBean.flExibirHistorico}" value="Selecione os valores para pagamento" style="font-weight: bold; font-size: x-large; color: blue;" />
+				            	<p:outputLabel rendered="#{junoPagamentosBean.flExibirHistorico}" value="Recibo número #{junoPagamentosBean.agoRecibo.sqRecibo} de #{junoPagamentosBean.agoRecibo.dtRecibo} valor R$ #{junoPagamentosBean.vlTotalSaldoDevedor}" style="font-weight: bold; font-size: x-large; color: blue;" />
+				            </f:facet>
 									
 							<p:column headerText="" style="text-align:left; width:200px;" >
-								<p:outputLabel value="#{item.dsLancamentoTipo}"/>
+								<p:outputLabel style="#{item.dsCor}" value="#{item.dsLancamentoTipo}"/>
 							</p:column>
 									
 							<p:column headerText="Valor" style="text-align: right; width:90px; ">
@@ -173,9 +268,10 @@
 							<p:column  headerText="Pagar" style="text-align:center; width:70px;" >
 								<p:selectBooleanCheckbox 
 										rendered="true"
+										disabled="#{junoPagamentosBean.flCheckBoxRealizarPagamento}"
 										id="cmbFlRealizarPagamento" 
 										value="#{item.flLancamentoSelecionado}" >
-									<p:ajax update="frm:dtList, frm:dtList2" process="@this" listener="#{junoPagamentosBean.calcularSelecionados}" />
+									<p:ajax update=":frm" process="@this" listener="#{junoPagamentosBean.calcularSelecionados}" />
 								</p:selectBooleanCheckbox>
 								
 								<f:facet name="footer" >
@@ -192,16 +288,29 @@
 							<p:column headerText="Reemitir cobrança" style="text-align:left; " >
 								<h:commandLink value="Exibir cobrança"
 										id="cmlExibirBoleto"
-										rendered="#{not empty item.dsUrl}"
+										rendered="#{(item.dsFormaPagamento eq 'CARTAOCREDITO') or (item.dsFormaPagamento eq 'BOLETO')}"
 				                		actionListener="#{junoPagamentosBean.exibirCobrancaHistorico(item.dsUrl)}"
 				                		target="_blank" 
 				                		type="submit" 
 				                		style="text-decoration:none; color: red; font-weight: bold;" />
+				                		
+				                <p:commandButton value="Orientacões" 
+				                		rendered="#{(item.dsFormaPagamento eq 'PIX') or (item.dsFormaPagamento eq 'DEPOSITO') or (item.dsFormaPagamento eq 'OUTROS')}"
+				                		style="font-weight: bold; color: #f6d636; height:20px"
+				                		oncomplete="PF('widgAgoOrientacoes').show();"
+				                		actionListener="#{junoPagamentosBean.agoOrientacoes()}"
+				                		process="@this"
+										update=":frm_ago_orientacoes"
+						    			ajax="true" />
 							</p:column>
-									
-							<f:facet name="footer">
-						        <p:outputLabel value="Selecione os valores para pagamento"/>
-						    </f:facet>
+							
+							<p:column rendered="#{junoPagamentosBean.flExibirBotaoExcluirInscricaoAgo}" headerText="" style="text-align:left;" >
+								<p:commandButton 
+										value="Excluir da Lista"
+										style="font-weight: bold; color: #f6d636; height:40px"
+										action="#{junoPagamentosBean.AgoExcluirInscricao('ago', item)}"
+										update="@form" />
+							</p:column>
 									
 						</p:dataTable> 
 					</div>
@@ -214,7 +323,7 @@
 									layout="grid"
 									id="pgExibirCobrancaAtual" 
 									columnClasses="ui-grid-col-12"
-									rendered="#{not empty junoPagamentosBean.charge.checkoutUrl}" >
+									rendered="#{not empty junoPagamentosBean.agoChargeRecibo.charge.checkoutUrl}" >
 										
 							<p:outputLabel style="text-decoration:none; font-size: xx-large; color: blue; font-weight: bold;" 
 											value="Pagamento gerado e emitido para o e-mail: #{junoPagamentosBean.ministro.dsEmail} #{junoPagamentosBean.ministro.dsSegundoEmail}" />
@@ -226,24 +335,54 @@
 					                		type="submit" 
 					                		style="text-decoration:none; font-size: xx-large; color: red; font-weight: bold;" />
 				        </p:panelGrid>
+				        
+				        <p:panelGrid columns="1" 
+									layout="grid"
+									id="pgExibirIntensaoDePagamento" 
+									columnClasses="ui-grid-col-12"
+									rendered="#{junoPagamentosBean.flExibirInformacoesPagamentoOutros}" >
+									
+							<p:outputLabel style="text-decoration:none; font-size: xx-large; color: blue; font-weight: bold;" 
+										value="COBRANÇA gerada com intensão de pagamento por #{junoPagamentosBean.agoFormaPagamentoSelecionada.dsFormaPagamento}. Para confirmar favor enviar comprovante de pagamento para o email #{junoPagamentosBean.dsEmailAtivo} ou para whatsapp #{junoPagamentosBean.dsWatsappAtivo}" />
+									
+						</p:panelGrid>
 					
 					</div>
 					
 					<div align="center">
-						<p:panelGrid columns="2" 
+						<p:panelGrid columns="1" 
 									layout="grid"
 									id="pgFormaPagamento" 
-									columnClasses="ui-grid-col-4, ui-grid-col-7"
-									style="font-size: large; font-weight: bold;"
-									rendered="#{not empty junoPagamentosBean.lancamentosTOList}" >
+									columnClasses="ui-grid-col-12"
+									style="font-size: large; font-weight: bold;" >
 									
-							<p:outputLabel style="color: blue;" value="FORMA DE PAGAMENTO:" />
-									
-							<p:selectOneRadio style="color: blue;" id="cdFormaPagamento" value="#{junoPagamentosBean.dsFormaPagamento}">
-					            <f:selectItem  itemLabel="BOLETO" itemValue="BOLETO"  />
-					            <f:selectItem itemLabel="CARTÃO DE CRÉDITO" itemValue="CARTAOCREDITO" />
-					            <p:ajax update="frm:dtList, frm:dtList2" process="@this" listener="#{junoPagamentosBean.formaPagamento}" />
-					        </p:selectOneRadio>
+									 
+				            <p:dataTable id="dtListFrmPgto" 
+				            		var="itemFrmPgto" 
+				            		style="width:740px; margin-top:20px;"
+				            		value="#{junoPagamentosBean.agoFormasPagamento}" 
+				            		selection="#{junoPagamentosBean.agoFormaPagamentoSelecionada}" 
+				            		rowKey="#{itemFrmPgto.sqFormaPagamento}" 
+				            		rendered="#{junoPagamentosBean.lancamentosTOList.size() > 0 and junoPagamentosBean.flExibirFormasPagamento}" >
+				        
+								<p:ajax event="rowSelectRadio" update=":frm:dtList :frm:dtList2 :frm:cmbEmitirBoleto" process="@this" imediate="true" listener="#{junoPagamentosBean.formaPagamento}" />
+								           
+				                <f:facet name="header">
+				                	 <p:outputLabel value="Selecione a forma de Pagamento" style="font-weight: bold; font-size: x-large; color: blue;" />
+				                </f:facet>
+				                
+				                <p:column selectionMode="single" style="width:16px;text-align:center" />
+				                				     
+				            	<p:column headerText="" style="width:180px;text-align:left">
+					                <h:outputText value="#{itemFrmPgto.dsFormaPagamento}" style="font-weight: bold; font-size: large; color: #006400;" />
+					            </p:column>
+					            
+					            <p:column headerText="">
+					                <h:outputText value="#{itemFrmPgto.dsDescricao}" />
+					            </p:column>
+					
+							</p:dataTable>
+
 						</p:panelGrid>
 					</div>
 					
@@ -253,12 +392,12 @@
 							value="#{junoPagamentosBean.parcelamentoTOList}"
 							rowKey="#{item2.qtdeParcelas}"
 		                    selection="#{junoPagamentosBean.parcelamentoSelecionado}" 
-		                    style="width:250px; margin-top:20px;"
+		                    style="width:440px; margin-top:20px;"
 		                    emptyMessage=""
-		                    rendered="#{not empty junoPagamentosBean.lancamentosTOList}" >
+		                    rendered="#{junoPagamentosBean.lancamentosTOList.size() > 0 and junoPagamentosBean.flExibirParcelamento}" >
 						    
 							<f:facet name="header">
-						        <p:outputLabel value="Selecione o parcelamento desejado"/>
+						        <p:outputLabel value="Selecione o parcelamento desejado" style="font-weight: bold; font-size: x-large; color: blue;"/>
 						    </f:facet>
 								    
 						    <p:column selectionMode="single" style="width:26px; text-align:center"/>
@@ -281,14 +420,14 @@
 									layout="grid"
 									id="pgEmitirBoleto" 
 									columnClasses="ui-grid-col-4, ui-grid-col-4, ui-grid-col-4"
-									rendered="#{not empty junoPagamentosBean.lancamentosTOList}" >
+									rendered="#{junoPagamentosBean.lancamentosTOList.size() > 0 and junoPagamentosBean.flExibirBotaoGerarPagamento}" >
 								
 								<p:outputLabel />
 		
-								<p:commandButton value="GERAR PAGAMENTO"
+								<p:commandButton value="GERAR PAGAMENTO por #{junoPagamentosBean.agoFormaPagamentoSelecionada.dsFormaPagamento}"
 											id="cmbEmitirBoleto"
 											style="font-weight: bold; font-size: large; color: #f6d636; margin-top:20px; margin-bottom: 10px;"
-											action="#{junoPagamentosBean.emitirCobranca}"
+											action="#{junoPagamentosBean.emitirCobranca('ago')}"
 											update="@form" />
 						        
 								<p:outputLabel />		 					
@@ -296,6 +435,232 @@
 					</div>	
 					
 				</div>	
+			</h:form>
+			
+			<!-- Dialogo para fazer a inscricao de outro ministro -->
+			<h:form id="frm_ago_outro_ministro">
+				<p:dialog 
+						widgetVar="widgAgoOutroMinistroDialog"
+						id="cadastrarConjugeDialog"
+						header="Fazer INSCRIÇÃO de outro Ministro da CONFRATERES"
+						resizable="false"
+						responsive="true"
+						modal="true"
+						width="70%" >
+						
+					<p:messages closable="true" style="font-size: small;" > <p:autoUpdate /> </p:messages>
+				
+					<h:panelGroup id="AgoOutroMinistro" layout="block" styleClass="ui-fluid">
+						<div class="cv-cadastro">
+								<p:panelGrid columns="4"
+									layout="grid"
+									id="agoBuscarOutroMinistro" 
+									columnClasses="ui-grid-col-3, ui-grid-col-1, ui-grid-col-2,ui-grid-col-6">
+									
+									<p:outputLabel style="font-weight: bold;" value="Registro Confrateres" for="AgoNnRg"/>
+									<p:inputText required="false" id="AgoNnRg" value="#{junoPagamentosBean.agoMinistroOutrosTemp.cdCodigo}" onfocus="" />
+											
+									<p:outputLabel style="font-weight: bold;" value="Nome Ministro" for="AgoDsMinistro"/>
+									<p:inputText required="false" id="AgoDsMinistro" value="#{junoPagamentosBean.agoMinistroOutrosTemp.nmNome}" />
+									
+									<p:commandButton 
+										value="Pesquisar"
+										style="font-weight: bold; font-size: large; color: #f6d636; height:100px"
+										action="#{junoPagamentosBean.AgoPesquisarMinistroOutros('ago')}"
+										update=":frm_ago_outro_ministro:dtAgoList"/>
+										
+									<div align="center">
+										<p:dataTable value="#{junoPagamentosBean.agoMinistroOutrosTempTOList}"
+											var="itemAgo"
+											style="width:640px; margin-top:20px;"
+											id="dtAgoList"
+											paginator="true"
+											rows="5"
+											multiViewState="true"
+											paginatorPosition="top"
+											emptyMessage="Não há registros para exibir" 
+											rendered="true" >
+													
+											<p:column headerText="Rg" sortBy="#{itemAgo.cdCodigo}" style="text-align:left; width:40px;" >
+												<p:outputLabel value="#{itemAgo.cdCodigo}"/>
+											</p:column>
+											
+											<p:column headerText="Ministro" sortBy="#{itemAgo.nmNome}" style="text-align:left;" >
+												<p:outputLabel value="#{itemAgo.nmNome}"/>
+											</p:column>
+											
+											<p:column headerText="Igreja" sortBy="#{itemAgo.igreja.dsIgreja}" style="text-align:left;" >
+												<p:outputLabel value="#{itemAgo.igreja.dsIgreja}"/>
+											</p:column>
+											
+											<p:column headerText="" style="text-align:center;" >
+												<p:commandButton value="Selecionar"
+														style="font-weight: bold; color: #f6d636;"
+														action="#{junoPagamentosBean.agoMinistroOutrosSelecionado(itemAgo)}"
+														oncomplete="jsFecharDialogo(xhr, status, args, 'widgAgoOutroMinistroDialog', 'shake')" 
+														process="@form"
+														update=":frm" />
+											</p:column>
+											
+										</p:dataTable>
+									</div>
+									
+								</p:panelGrid>
+						</div>
+					</h:panelGroup>
+				</p:dialog>
+			</h:form>
+			
+			<!-- Dialogo para fazer a inscricao de conjuge de Ministro e outros que não são ministros da Confrateres -->
+			<h:form id="frm_ago_esposa_ministro_outros">
+				<p:dialog 
+						widgetVar="widgAgoEsposaOutro"
+						id="inscricaoEsposaOutrosDialog"
+						header="Fazer INSCRIÇÃO de Esposa de Ministro e Outros"
+						resizable="false"
+						responsive="true"
+						modal="true" >
+						
+					<p:messages closable="true" style="font-size: small;" > <p:autoUpdate /> </p:messages>
+					
+					<h:panelGroup id="AgoEsposaOutros" layout="block" styleClass="ui-fluid">
+						<div class="cv-cadastro">
+							<p:panelGrid columns="2"
+											layout="grid"
+											id="agoInscricaoEsposaOutros" 
+											columnClasses="ui-grid-col-1, ui-grid-col-11">
+							
+								<p:outputLabel style="font-weight: bold;" value="Nome: " for="AgoDsEsposaOutro"/>
+								<p:inputText required="false" id="AgoDsEsposaOutro" value="#{junoPagamentosBean.agoMinistroOutrosTemp.nmNome}" />
+							
+							</p:panelGrid>
+						</div>
+						
+						<p:commandButton value="Selecionar"
+								style="font-weight: bold; color: #f6d636;"
+								action="#{junoPagamentosBean.agoEsposaOutrosSelecionado(junoPagamentosBean.agoMinistroOutrosTemp)}"
+								oncomplete="jsFecharDialogo(xhr, status, args, 'widgAgoEsposaOutro', 'shake')" 
+								process="@form"
+								update=":frm" />
+						
+					</h:panelGroup>
+				</p:dialog>
+			</h:form>
+			
+			<!-- Dialogo de orientacoes para pagamentos por PIX, DEPOSITO, TED e OUTROS -->
+			<h:form id="frm_ago_orientacoes">
+				<p:dialog 
+						widgetVar="widgAgoOrientacoes"
+						id="orientacoesDialog"
+						header="Orientacoes para pagamentos por PIX, DEPÓSITO, TED e Outros tipos"
+						resizable="false"
+						responsive="true"
+						modal="true" >
+						
+					<p:messages closable="true" style="font-size: small;" > <p:autoUpdate /> </p:messages>
+					
+					<h:panelGroup id="AgoOrientacoes" layout="block" styleClass="ui-fluid">
+						<div class="cv-cadastro">
+							<p:panelGrid columns="1"
+											layout="grid"
+											id="agoInscricaoEsposaOutros" 
+											columnClasses="ui-grid-col-12">
+								
+								<p:dataTable id="dtListOrientacoes" 
+										var="itemOrientacao" 
+										value="#{junoPagamentosBean.agoOrientacoes}"
+										emptyMessage="Nada para exibir"
+					                    style="margin-top:20px;" >
+
+									<p:column headerText="Meio de Pagamento" style="text-align:left; width:20px;" >
+										<p:outputLabel  value="#{itemOrientacao.dsTipoPagamento}"/>
+									</p:column>
+		                    		
+		                    		<p:column headerText="Orientacão" style="text-align:left; width:200px;" >
+										<p:outputLabel  value="#{itemOrientacao.dsOrientacoes}"/>
+									</p:column>
+								
+								</p:dataTable>
+							</p:panelGrid>
+						</div>					
+						<p:button value="Fechar" 
+								onclick="PF('widgAgoOrientacoes').hide(); return false;"
+								style="font-weight: bold; color: #f6d636; width: auto" />
+					</h:panelGroup>
+				</p:dialog>
+			</h:form>
+			
+			
+			<!-- Dialogo para listar minhas inscricoes que já foram realizadas -->
+			<h:form id="frm_ago_inscricoes_realizadas">
+				<p:dialog 
+						widgetVar="widgAgoInscricoesRealizadasDialog"
+						id="inscricoesRealizadasDialog"
+						header="Lista de inscricões realizadas"
+						resizable="false"
+						responsive="true"
+						modal="true"
+						width="70%" >
+						
+					<p:messages closable="true" style="font-size: small;" > <p:autoUpdate /> </p:messages>
+					
+					<h:panelGroup id="AgoInscericoesRealizadas" layout="block" styleClass="ui-fluid">
+						<div class="cv-cadastro">
+							<p:panelGrid columns="1"
+											layout="grid"
+											id="agoInscricoesRealizadas" 
+											columnClasses="ui-grid-col-12">
+											
+								<p:dataTable id="dtLisInscricoesRealizadas" 
+										var="itemReciboInsc" 
+										value="#{junoPagamentosBean.agoReciboList}"
+										emptyMessage="Nada para exibir"
+					                    style="margin-top:20px;" 
+					                    paginator="true"
+										rows="5"
+										multiViewState="true"
+										paginatorPosition="top" >
+	
+									<p:column headerText="Recibo" style="text-align:center; width:50px;" >
+										<p:outputLabel  value="#{itemReciboInsc.sqRecibo}"/>
+									</p:column>
+									
+									<p:column headerText="Data" style="text-align:center; width:100px;" >
+										<p:outputLabel  value="#{itemReciboInsc.dtRecibo}" >
+											<f:converter converterId="converter_localdate"/>
+										</p:outputLabel>
+									</p:column>
+									
+									<p:column headerText="Valor recibo" style="text-align:right; width:100px;" >					
+										<h:outputText value="#{itemReciboInsc.vlRecibo}" styleClass="moeda">
+											<f:convertNumber maxFractionDigits="2" minFractionDigits="2" />
+										</h:outputText>
+									</p:column>
+									
+									<p:column headerText="Validado em" style="text-align:center; width:100px;" >
+										<p:outputLabel  value="#{itemReciboInsc.dtValidado}" >
+											<f:converter converterId="converter_localdate"/>
+										</p:outputLabel>
+									</p:column>
+									
+									<p:column headerText="" style="text-align:center;" >
+										<p:commandButton value="Selecionar"
+												style="font-weight: bold; color: #f6d636;"
+												action="#{junoPagamentosBean.buscarInscricoesMinistro(itemReciboInsc)}"
+												oncomplete="jsFecharDialogo(xhr, status, args, 'widgAgoInscricoesRealizadasDialog', 'shake')" 
+												process="@form"
+												update=":frm" />
+									</p:column>
+									
+								</p:dataTable>
+
+							</p:panelGrid>
+						</div>					
+						<p:button value="Fechar" 
+								onclick="PF('widgAgoInscricoesRealizadasDialog').hide(); return false;"
+								style="font-weight: bold; color: #f6d636; width: auto" />
+					</h:panelGroup>
+				</p:dialog>
 			</h:form>
 		</div>
 	</div>

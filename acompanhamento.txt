@@ -1,4 +1,11 @@
-		
+Preparacão para AGO
+
+Pendencias
+1) Após confirmar o pagamento retornar com os registros do recibo criado.
+
+
+
+=============================================================================		
 //DADOS DE TESTE
 //-----------------------------------------------------------------------------		
 //		ministro.setCdCodigo(46L);
