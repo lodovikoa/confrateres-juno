@@ -110,6 +110,7 @@ public class JunoPagamentosDAO implements Serializable {
 		.append(",if(vlPagamentos.vlTotalPago is null, rgl.rgl_vl_lancamento, (rgl.rgl_vl_lancamento - vlPagamentos.vlTotalPago) ) as vlSaldo ")
 		.append(",tpl.tpl_ds_tipolancamento as dsLancamentoTipo ")
 		.append(",ifnull(bol.bol_ds_url, '') as dsUrl ")
+		.append(",ifnull(agr.agr_ds_forma_pagamento, '') as dsFormaPagamento ")
 		.append("from tb_rgl_reglancamento rgl ")
 		.append("left join( ") 
 		.append("select sum(lan.lan_vl_pagamento) as vlTotalPago, lan.rgl_sq_reglancamento as sqRegLancamento ") 
@@ -120,6 +121,7 @@ public class JunoPagamentosDAO implements Serializable {
 		.append("left join tb_tpl_tipolancamento tpl on rgl.tpl_sq_tipolancamento = tpl.tpl_sq_tipolancamento ")
 		.append("left join tb_dpt_departamento dpt on min.dpt_sq_departamento = dpt.dpt_sq_departamento ")
 		.append("left join tb_bol_boleto bol on bol.rgl_sq_reglancamento = rgl.rgl_sq_reglancamento ")
+		.append("left join tb_agr_ago_recibo agr on agr.agr_sq_recibo = bol.agr_sq_recibo ")
 		.append("where ((rgl.rgl_vl_lancamento - vlPagamentos.vlTotalPago) is null or	(rgl.rgl_vl_lancamento - vlPagamentos.vlTotalPago) >= 0.01) ")
 		.append("and rgl.rgl_dt_cancelado is null ")
 		.append("and min.min_dt_excluido is null ")
@@ -146,6 +148,7 @@ public class JunoPagamentosDAO implements Serializable {
 			regDTO.setVlSaldo(new BigDecimal(ob[3].toString()));
 			regDTO.setDsLancamentoTipo(ob[4].toString());
 			regDTO.setDsUrl(ob[5].toString());
+			regDTO.setDsFormaPagamento(ob[6].toString());
 
 			regLancamentosTO.add(regDTO);
 		}

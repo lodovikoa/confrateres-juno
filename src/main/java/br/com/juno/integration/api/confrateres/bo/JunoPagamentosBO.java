@@ -331,7 +331,7 @@ public class JunoPagamentosBO implements Serializable {
 						boleto = new Boleto();
 						boleto.setRegLancamento(new RegLancamento());
 
-						boleto.setDsUrl(agoChargeRecibo.getCharge().getCheckoutUrl());
+						boleto.setDsUrl(agoChargeRecibo.getCharge() != null? agoChargeRecibo.getCharge().getCheckoutUrl(): "");
 						boleto.getRegLancamento().setSqRegLancamento(reg.getSqRegLancamento());
 						boleto.setAgoRecibo(agoRecibo);
 						junoPagamentosDAO.saveBoleto(boleto);
